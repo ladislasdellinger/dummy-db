@@ -1,10 +1,9 @@
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { useUser, useSupabaseClient } from "@supabase/auth-helpers-react";
-import LoadingDots from "components/ui/LoadingDots";
-import Logo from "components/icons/Logo";
 import { getURL } from "@/utils/helpers";
 import { Auth, ThemeSupa } from "@supabase/auth-ui-react";
+import Button from "ui/Button";
 
 const Home = () => {
   const router = useRouter();
@@ -12,45 +11,40 @@ const Home = () => {
   const supabaseClient = useSupabaseClient();
 
   useEffect(() => {
-    if (user) {
-      router.replace("/account");
-    }
-  }, [user]);
+    if (user) router.push("/dashboard");
+  }, [user, router]);
 
   if (!user)
     return (
-      <div className="flex justify-center height-screen-helper">
-        <div className="flex flex-col justify-between max-w-lg p-3 m-auto w-80 ">
-          <div className="flex justify-center pb-12 ">
-            <Logo width="64px" height="64px" />
-          </div>
-          <div className="flex flex-col space-y-4">
-            <Auth
-              supabaseClient={supabaseClient}
-              providers={["github"]}
-              redirectTo={getURL()}
-              magicLink={true}
-              appearance={{
-                theme: ThemeSupa,
-                variables: {
-                  default: {
-                    colors: {
-                      brand: "#404040",
-                      brandAccent: "#52525b",
-                    },
+      <div className="flex flex-col items-center justify-center h-screen">
+        <h1 className="text-9xl font-bold pb-4 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 bg-clip-text text-transparent">
+          DummyDB
+        </h1>
+        <div className="w-80">
+          <Auth
+            supabaseClient={supabaseClient}
+            providers={["github"]}
+            redirectTo={getURL()}
+            appearance={{
+              theme: ThemeSupa,
+              variables: {
+                default: {
+                  colors: {
+                    brand: "#404040",
+                    brandAccent: "#52525b",
                   },
                 },
-              }}
-              theme="dark"
-            />
-          </div>
+              },
+            }}
+            theme="dark"
+          />
         </div>
       </div>
     );
 
   return (
-    <div className="m-6">
-      <LoadingDots />
+    <div>
+      <Button onClick={() => supabaseClient.auth.signOut()}>Logout</Button>
     </div>
   );
 };
